@@ -1,0 +1,47 @@
+# coding: utf-8
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "debian/bullseye64"
+  
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.linked_clone = true
+  end
+
+  ####################################################################
+  # dns.sistema.sol
+  ####################################################################
+  
+  config.vm.define "dns" do |dns|
+
+    dns.vm.provider "virtualbox" do |vb|
+      vb.name = "http-lab-2-dns"
+      vb.memory = "256"
+    end
+
+    dns.vm.hostname = "dns.sistema.sol"    
+    dns.vm.network :private_network, ip: "192.168.56.100", hostname: true
+
+    dns.vm.provision "shell", path: "provision/dns.sh"
+    
+  end
+
+  ####################################################################
+  # tierra.sistema.sol
+  ####################################################################
+
+  config.vm.define "tierra" do |tierra|
+    tierra.vm.provider "virtualbox" do |vb|
+      vb.name = "http-lab-2-tierra"
+      vb.memory = "256"
+    end
+
+    tierra.vm.hostname = "tierra.sistema.sol"
+    tierra.vm.network :private_network, ip: "192.168.56.101", hostname: true
+    
+    tierra.vm.provision "shell", path: "provision/tierra.sh"
+  end
+end

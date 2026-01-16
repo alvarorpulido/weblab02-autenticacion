@@ -3,7 +3,7 @@
 #
 # Usage:
 #
-#     hurl --test --variable site=domain weblab-2.hurl
+#     hurl --test --variable site=sistema.sol weblab-2.hurl
 #
 # Example:
 #
