@@ -1,5 +1,6 @@
 sudo apt-get update && sudo apt-get upgrade -y
 sudo apt-get install apache2 -y && sudo apt-get install bind9-utils -y
+sudo apt-get install -y openssl
 
 cat <<EOF > /etc/hosts
 127.0.0.1 localhost
@@ -42,6 +43,23 @@ echo "commander:astronauts:$(printf "commander:astronauts:commander" | md5sum | 
 
 cp /vagrant/apache/discovery.sistema.sol.conf /etc/apache2/sites-available/
 a2ensite discovery.sistema.sol.conf
+
+
+# Weblab04:
+grep -q "Listen 443" /etc/apache2/ports.conf || echo "Listen 443" >> /etc/apache2/ports.conf
+a2enmod ssl
+mkdir -p /etc/apache2/ssl
+
+openssl req -x509 -nodes -days 365 \
+  -newkey rsa:2048 \
+  -keyout /etc/apache2/ssl/discovery.key \
+  -out /etc/apache2/ssl/discovery.crt \
+  -subj "/C=ES/ST=Andalucia/L=Granada/O=Sistema/OU=IT/CN=discovery.sistema.sol"
+
+
+cp /vagrant/apache/discovery.sistema.sol-ssl.conf /etc/apache2/sites-available/
+a2ensite discovery.sistema.sol-ssl.conf
+
 
 apachectl configtest
 
